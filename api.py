@@ -26,8 +26,6 @@ import traceback
 import inspect
 import rest
 
-
-
 class Apiary(cmd.Cmd):
     prompt = '> '
     intro = "Apiarist, the one plays with api swarm, present to you by AppFirst"

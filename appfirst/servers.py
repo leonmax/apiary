@@ -4,8 +4,6 @@ Created on Oct 26, 2012
 @author: Yangming
 '''
 
-import sys
-sys.path = filter(lambda m: "backend" not in m, sys.path)
 import settings
 from rest import Rest
 

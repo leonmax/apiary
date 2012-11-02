@@ -54,6 +54,18 @@ class Rest(object):
         if self.auth_type == "basic":
             return (self.api_id, self.api_key)
 
+    def make_querystring(self, **kwargs):
+        qstr = ""
+        for k, v in kwargs.iteritems():
+            if qstr:
+                qstr += "&"
+            else:
+                qstr = "?"
+            import re
+            v = re.sub(r"\s+", r"+", v)
+            qstr += "%s=%s" % (k,v)
+        return qstr
+
     def make_path(self, path_fmt, **kwargs):
         fmt = Template(path_fmt)
         path = fmt.safe_substitute(**kwargs)
