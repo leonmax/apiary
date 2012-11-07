@@ -27,27 +27,35 @@ class ServerTags(Rest):
 
     @Rest.api
     def list_servertags(self, *args):
-        respJson = self.get("/server_tags/").json
-        return self.filter_list_dict(respJson, *args)
+        resp = self.get("/server_tags/")
+        if not resp or not hasattr(resp, "json"):
+            return None
+        return self.filter_list_dict(resp.json, *args)
 
     @Rest.api
     def view_servertag(self, tag_id):
         path = self.make_path("/server_tags/$tag_id", tag_id=tag_id)
-        respJson = self.get(path).json
-        return respJson
+        resp = self.get(path)
+        if not resp or not hasattr(resp, "json"):
+            return None
+        return resp.json
 
     @Rest.api
     def list_servertag_servers(self, *server_tags):
         """ call list_servertag_servers server_tags1 server_tags2 ...
             sample: call list_servertag_servers Redis Queue"""
-        kwargs = {"server_tags":stag for stag in server_tags}
+        kwargs = dict([("server_tags",stag) for stag in server_tags])
         qstr=self.make_querystring(**kwargs)
         path = self.make_path("/server_tags/servers/$qstr", qstr=qstr)
-        respJson = self.get(path).json
-        return respJson
+        resp = self.get(path)
+        if not resp or not hasattr(resp, "json"):
+            return None
+        return resp.json
 
     @Rest.api
     def list_servertags_versions(self):
         path = self.make_path("/server_tags/versions")
-        respJson = self.get(path).json
-        return respJson
+        resp = self.get(path)
+        if not resp or not hasattr(resp, "json"):
+            return None
+        return resp.json

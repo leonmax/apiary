@@ -23,25 +23,33 @@ class Processes(Rest):
 
     @Rest.api
     def list_processes(self, *args):
-        respJson = self.get("/processes/").json
-        return self.filter_list_dict(respJson, *args)
+        resp = self.get("/processes/")
+        if not resp or not hasattr(resp, "json"):
+            return None
+        return self.filter_list_dict(resp.json, *args)
 
     @Rest.api
     def view_process(self, uid):
         """retrieve_processes %uid -- Retrieves historical data for the given process.
             returns process data in json"""
         path = self.make_path("/processes/$uid/data", uid=uid)
-        respJson = self.get(path).json
-        return respJson
+        resp = self.get(path)
+        if not resp or not hasattr(resp, "json"):
+            return None
+        return resp.json
 
     @Rest.api
     def view_process_detail(self, uid):
         path = self.make_path("/processes/$uid/detail", uid=uid)
-        respJson = self.get(path).json
-        return respJson
+        resp = self.get(path)
+        if not resp or not hasattr(resp, "json"):
+            return None
+        return resp.json
 
     @Rest.api
     def list_processes_versions(self):
         path = self.make_path("/processes/versions")
-        respJson = self.get(path).json
-        return respJson
+        resp = self.get(path)
+        if not resp or not hasattr(resp, "json"):
+            return None
+        return resp.json

@@ -75,14 +75,24 @@ class Rest(object):
         url = self.endpoint + path
         return url
 
+    def _filter_dict(self, fields):
+        def filter_dict_by_fields(d):
+            newD = {}
+            for k in fields:
+                if k in d:
+                    newD[k] = d[k]
+        return filter_dict_by_fields
+
     def filter_list_dict(self, json, *fields):
         if fields:
-            json = map(lambda d: {k: d[k] for k in fields if k in d}, json)
+            json = map(lambda d: dict([(k, d[k]) for k in fields if k in d]), json)
+#            json = map(self._filter_dict(fields), json)
         return json
 
     def filter_dict(self, json, *fields):
         if fields:
-            json = {k: json[k] for k in fields if k in json}
+            json = dict([(k, json[k]) for k in fields if k in json])
+#            json = self._filter_dict(filter)(json)
         return json
 
     def get(self, path, head={}):
