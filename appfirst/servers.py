@@ -37,15 +37,13 @@ class Servers(Rest):
                 "kernel_version"    : "The specific kernel version of the server's OS"
                }
 
-    @Rest.api
-    def list_servers(self, *args):
+    def api_list_servers(self, *args):
         resp = self.get("/servers/")
         if not resp or not hasattr(resp, "json"):
             return None
         return self.filter_list_dict(resp.json, *args)
 
-    @Rest.api
-    def view_server(self, server_id):
+    def api_view_server(self, server_id):
         """view_server %server_id -- returns server data in json"""
         path = self.make_path("/servers/$server_id", server_id=server_id)
         resp = self.get(path)
@@ -53,40 +51,35 @@ class Servers(Rest):
             return None
         return resp.json
 
-    @Rest.api
-    def view_server_data(self, server_id):
+    def api_view_server_data(self, server_id):
         path = self.make_path("/servers/$server_id/data", server_id=server_id)
         resp = self.get(path)
         if not resp or not hasattr(resp, "json"):
             return None
         return resp.json
 
-    @Rest.api
-    def view_server_outages(self, server_id):
+    def api_view_server_outages(self, server_id):
         path = self.make_path("/servers/$server_id/outages", server_id=server_id)
         resp = self.get(path)
         if not resp or not hasattr(resp, "json"):
             return None
         return resp.json
 
-    @Rest.api
-    def view_server_polleddataconfig(self, server_id, *args):
+    def api_view_server_polleddataconfig(self, server_id, *args):
         path = self.make_path("/servers/$server_id/polled_data_config", server_id=server_id)
         resp = self.get(path)
         if not resp or not hasattr(resp, "json"):
             return None
         return self.filter_dict(resp.json, *args)
 
-    @Rest.api
-    def view_server_tags(self, server_id):
+    def api_view_server_tags(self, server_id):
         path = self.make_path("/servers/$server_id/tags", server_id=server_id)
         resp = self.get(path)
         if not resp or not hasattr(resp, "json"):
             return None
         return resp.json
 
-    @Rest.api
-    def list_server_versions(self):
+    def api_list_server_versions(self):
         path = self.make_path("/servers/versions")
         resp = self.get(path)
         if not resp or not hasattr(resp, "json"):

@@ -28,31 +28,27 @@ class PolledData(Rest):
                 "resource_uri"  : "The URI to get more information about this item"
                }
 
-    @Rest.api
-    def list_polleddata(self, *args):
+    def api_list_polleddata(self, *args):
         resp = self.get("/polled-data/")
         if not resp or not hasattr(resp, "json"):
             return None
         return self.filter_list_dict(resp.json, *args)
 
-    @Rest.api
-    def view_polleddata(self, pd_id):
+    def api_view_polleddata(self, pd_id):
         path = self.make_path("/polled-data/$pd_id/", pd_id=pd_id)
         resp = self.get(path)
         if not resp or not hasattr(resp, "json"):
             return None
         return resp.json
 
-    @Rest.api
-    def view_polleddata_data(self, pd_id):
+    def api_view_polleddata_data(self, pd_id):
         path = self.make_path("/polled-data/$pd_id/data/", pd_id=pd_id)
         resp = self.get(path)
         if not resp or not hasattr(resp, "json"):
             return None
         return resp.json
 
-    @Rest.api
-    def list_polleddata_versions(self):
+    def api_list_polleddata_versions(self):
         path = self.make_path("/polled-data/versions/")
         resp = self.get(path)
         if not resp or not hasattr(resp, "json"):

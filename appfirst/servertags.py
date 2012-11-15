@@ -25,23 +25,20 @@ class ServerTags(Rest):
                 "resource_uri"  : "The URI to get more information about this item"
                }
 
-    @Rest.api
-    def list_servertags(self, *args):
+    def api_list_servertags(self, *args):
         resp = self.get("/server_tags/")
         if not resp or not hasattr(resp, "json"):
             return None
         return self.filter_list_dict(resp.json, *args)
 
-    @Rest.api
-    def view_servertag(self, tag_id):
+    def api_view_servertag(self, tag_id):
         path = self.make_path("/server_tags/$tag_id", tag_id=tag_id)
         resp = self.get(path)
         if not resp or not hasattr(resp, "json"):
             return None
         return resp.json
 
-    @Rest.api
-    def list_servertag_servers(self, *server_tags):
+    def api_list_servertag_servers(self, *server_tags):
         """ call list_servertag_servers server_tags1 server_tags2 ...
             sample: call list_servertag_servers Redis Queue"""
         kwargs = dict([("server_tags",stag) for stag in server_tags])
@@ -52,8 +49,7 @@ class ServerTags(Rest):
             return None
         return resp.json
 
-    @Rest.api
-    def list_servertags_versions(self):
+    def api_list_servertags_versions(self):
         path = self.make_path("/server_tags/versions")
         resp = self.get(path)
         if not resp or not hasattr(resp, "json"):

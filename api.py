@@ -37,7 +37,7 @@ class Apiary(cmd.Cmd):
         self.all_mod = {}
         self.all_api = {}
         self.preload();
-        self.last_output = None;
+        self.last_result = None;
 
     def preload(self):
         for mod in config.preload_mods:
@@ -54,14 +54,16 @@ class Apiary(cmd.Cmd):
             except ImportError as e:
                 print e
                 return
-        for _, member in inspect.getmembers(service):
-            if (inspect.isclass(member)
-                    and issubclass(member, rest.Rest)
-                    and member is not rest.Rest):
-                print "loading: %s" % member
-                restobj = member()
-                for fn in member.commands:
-                    self.all_api[fn.func_name] = restobj.make_command(fn)
+        for _, membercls in inspect.getmembers(service, predicate=inspect.isclass):
+            if (issubclass(membercls, rest.Rest)
+                    and membercls is not rest.Rest):
+                print "loading: %s" % membercls
+                restobj = membercls()
+
+                for name, memberfn in inspect.getmembers(membercls, predicate=inspect.ismethod):
+                    if ("api_" in name):
+                        fname = memberfn.func_name[4:]
+                        self.all_api[fname] = restobj.make_command(memberfn)
 
     def do_load(self, line):
         for mod_name in line.split():
@@ -79,18 +81,20 @@ class Apiary(cmd.Cmd):
             else:
                 print("api does not exist")
                 return
-        except TypeError as e:
-            print e.message
-        except Exception:
-            traceback.print_exc()
-        else:
             if not result:
                 pass
             elif type(result)==str:
                 print "help: %s" % result
             else:
-                self.last_output = result
-                pprint.pprint(result)
+                self.last_result = result
+                if isinstance(result, str) or isinstance(result, unicode):
+                    print result
+                else:
+                    pprint.pprint(result)
+        except TypeError as e:
+            print e.message
+        except Exception:
+            traceback.print_exc()
 
     def complete_call(self, text, line, begidx, endidx):
         argv = line.split()[1:]
@@ -110,17 +114,40 @@ class Apiary(cmd.Cmd):
         "Run a shell command"
         print "running shell command:", line
         output = os.popen(line).read()
-        print output
-        self.last_output = output
+        print output.strip()
+        self.last_result = output
 
     def do_replay(self, line):
-        pprint.pprint(self.last_output)
+        if line:
+            try:
+                f = open(line, "w+")
+                f.write(str(self.last_result))
+            except IOError:
+                print 'No file found'
+        pprint.pprint(self.last_result)
+
+    def do_clear(self, line):
+        if os.name == 'posix':
+            os.system('clear')
+        elif os == 'Windows':
+            os.system('cls')
 
     def do_exit(self, line):
         return True
 
     def do_EOF(self, line):
         return True
+
+    def default(self, line):
+        try:
+            d = dict(locals(), **globals())
+            exec(line, d, d)
+            for k in d:
+                if k not in globals() and k not in locals():
+                    globals()[k] = d[k]
+                    print d[k]
+        except Exception:
+            traceback.print_exc()
 
 #    def _enter_mode(self, mode):
 #        if mode:

@@ -5,21 +5,15 @@ Created on Oct 26, 2012
 '''
 
 from string import Template
-import requests
 import sys
 import inspect
 sys.path = filter(lambda m: "backend" not in m, sys.path)
+import requests
 
 class Rest(object):
     '''
     classdocs
     '''
-    @classmethod
-    def api(cls, fn):
-        if not hasattr(cls, "commands"):
-            cls.commands = []
-        cls.commands.append(fn)
-        return fn
 
     def make_command(self, fn):
         argspec = inspect.getargspec(fn)
@@ -33,10 +27,6 @@ class Rest(object):
                 return fn(self, *args[:argcount-1])
         return self_fn;
 
-    def __init__(self):
-        self.auth_type = None
-        self.fmt = None
-
     def set_endpoint(self, endpoint):
         self.endpoint = endpoint
 
@@ -47,12 +37,18 @@ class Rest(object):
     def set_auth_type(self, auth_type):
         self.auth_type = auth_type
 
-    def set_head(self, head={}):
-        pass
+    def set_headers(self, headers={}):
+        self.headers = headers
 
     def make_auth(self, method, path, head={}, data=None):
+        # TODO: support more auth types
+        # override this function to make customed auth
+        if not hasattr(self,"auth_type"):
+            self.auth_type = None
         if self.auth_type == "basic":
             return (self.api_id, self.api_key)
+        else:
+            return None
 
     def make_querystring(self, **kwargs):
         qstr = ""
@@ -95,14 +91,18 @@ class Rest(object):
 #            json = self._filter_dict(filter)(json)
         return json
 
-    def get(self, path, head={}):
+    def get(self, path, headers={}):
         url = self.make_url(path)
         auth = self.make_auth("GET", path)
-        response = requests.get(url, auth=auth)
+        if hasattr(self, "headers"):
+            headers.update(self.headers)
+        response = requests.get(url, auth=auth, headers=headers)
         return response
 
-    def post(self, path, data=None, head={}):
+    def post(self, path, data=None, headers={}):
         url = self.make_url(path)
         auth = self.make_auth("POST", path)
-        response = requests.post(url, auth=auth)
+        if hasattr(self, "headers"):
+            headers.update(self.headers)
+        response = requests.post(url, auth=auth, headers=headers)
         return response
