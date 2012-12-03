@@ -7,8 +7,10 @@ Created on Oct 26, 2012
 from string import Template
 import sys
 import inspect
-sys.path = filter(lambda m: "backend" not in m, sys.path)
+old_path = sys.path
+sys.path = filter(lambda m: m and "backend" not in m, sys.path)
 import requests
+sys.path = old_path
 
 class Rest(object):
     '''

@@ -36,13 +36,13 @@ class Account(Rest):
         resp = self.get(path)
         return resp.text
 
-    def api_application_summary_metrics(self, app_id=None):
-        qstr = self.make_querystring(begin="2012-11-15T05:47:19Z", end="2012-11-15T05:52:19Z")
+    def api_application_summary_metrics(self, account_id, api_key, app_id=None):
         if app_id:
             path = self.make_path("/accounts/$account_id/applications/$app_id/threshold_values.xml$qstr",
                                   account_id=settings.account_id, app_id=app_id, qstr=qstr)
         else:
             path = "/accounts.xml?include=application_health"
+        self.set_headers({"x-api-key": api_key}) 
         resp = self.get(path)
         return resp.text
 
