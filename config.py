@@ -6,7 +6,7 @@ Created on Nov 1, 2012
 
 def config_path():
     import sys
-    sys.path = filter(lambda m: "backend" not in m, sys.path)
+    sys.path = filter(lambda m: m and "backend" not in m, sys.path)
 #    import os
     #for d in os.listdir("."):
     #    sys.path.append(d)
@@ -15,8 +15,8 @@ def config_path():
 config_path()
 
 preload_mods = ["newrelic.account"
-#               ,"appfirst.polleddata"
-#               ,"appfirst.servers"
-#               ,"appfirst.processes"
-#               ,"appfirst.servertags"
+#               ,"af.polleddata"
+#               ,"af.servers"
+#               ,"af.processes"
+#               ,"af.servertags"
                ]
