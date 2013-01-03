@@ -38,8 +38,8 @@ class Account(Rest):
 
     def api_application_summary_metrics(self, account_id, api_key, app_id=None):
         if app_id:
-            path = self.make_path("/accounts/$account_id/applications/$app_id/threshold_values.xml$qstr",
-                                  account_id=settings.account_id, app_id=app_id, qstr=qstr)
+            path = self.make_path("/accounts/$account_id/applications/$app_id/threshold_values.xml",
+                                  account_id=account_id, app_id=app_id)
         else:
             path = "/accounts.xml?include=application_health"
         self.set_headers({"x-api-key": api_key}) 
