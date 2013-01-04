@@ -14,7 +14,7 @@ def config_path():
 
 config_path()
 
-preload_mods = ["newrelic.account"
+preload_mods = ["nr.account"
 #               ,"af.polleddata"
 #               ,"af.servers"
 #               ,"af.processes"
