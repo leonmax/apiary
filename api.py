@@ -17,7 +17,7 @@ It defines the main entrance for apiarist
 @deffield    updated: Updated
 '''
 
-import config
+import apiary_config as config
 
 import os
 import cmd
