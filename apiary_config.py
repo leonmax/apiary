@@ -14,7 +14,8 @@ def config_path():
 
 config_path()
 
-preload_mods = ["nr.account"
+preload_mods = ["aws.cloudfront"
+#               ,"nr.account"
 #               ,"af.polleddata"
 #               ,"af.servers"
 #               ,"af.processes"
